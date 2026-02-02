@@ -1,8 +1,42 @@
-const { expect } = require("@playwright/test");
+import { expect, Page } from "@playwright/test";
 
-class Register {
+export class Register {
+    page: Page;
+    homeBtn: string;
+    loginBtn: string;
+    signupHeading: string;
+    name1: string;
+    email1: string;
+    signUpBtn: string;
+    accInfoHeading: string;
+    genderMr: string;
+    genderMs: string;
+    name2: string;
+    email2: string;
+    password: string;
+    days: string;
+    month: string;
+    year: string;
+    newsLetterCheckbox: string;
+    specialCheckbox: string;
+    firstName: string;
+    lastName: string;
+    company: string;
+    address1: string;
+    address2: string;
+    country: string;
+    state: string;
+    city: string;
+    zipcode: string;
+    mobile: string;
+    createAccBtn: string;
+    accCreateStatus: string;
+    continueBtn: string;
+    loggedInAsHeading: string;
 
-    constructor(page) {
+
+
+    constructor(page: Page) {
         this.page = page
         this.homeBtn = "//a[normalize-space()='Home']"
         this.loginBtn = "//a[normalize-space()='Signup / Login']"
@@ -52,7 +86,7 @@ class Register {
     }
 
 
-    async registerUser(name, email, title, password, day, month, year, firstName, lastName, company, address1, address2, country, state, city, zipcode, mobile) {
+    async registerUser(name:string, email:string, title:string, password:string, day:string, month:string, year:string, firstName:string, lastName:string, company:string, address1:string, address2:string, country:string, state:string, city:string, zipcode:string, mobile:string) {
 
         await expect(this.page.locator(this.homeBtn)).toBeVisible();
 
@@ -106,7 +140,7 @@ class Register {
     }
 
 
-    async registerUserWithExistingEmail(name, email) {
+    async registerUserWithExistingEmail(name:string, email:string) {
         await expect(this.page.locator(this.homeBtn)).toBeVisible();
 
         await this.page.locator(this.loginBtn).click();
@@ -119,5 +153,3 @@ class Register {
         await expect(this.page.locator("//p[normalize-space()='Email Address already exist!']")).toBeVisible();
     }
 }
-
-module.exports = Register

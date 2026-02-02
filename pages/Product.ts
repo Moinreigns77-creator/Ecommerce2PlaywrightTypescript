@@ -1,11 +1,62 @@
-const { expect } = require("@playwright/test")
-const { ECDH } = require("crypto")
+import { expect, Page } from "@playwright/test"
 
-const LoginPage = require("../pages/loginPage")
-const { log } = require("console")
+import { POManager } from "./POManager.ts"
 
-class Product {
-    constructor(page) {
+
+export class Product {
+    page
+    homeBtn
+    productsBtn
+    allProductsHeading
+    productList
+    firstProdut
+    firstProdName
+    firstProdCategory
+    firstProdPrice
+    firstProdAvailability
+    firstProdCondition
+    firstProdBrand
+    searchField
+    searchBtn
+    searchedProductsHeading
+    allProdTitle
+    prod1_AddCartBtn
+    prod1_price
+    prod1_name
+    prod1_viewProduct
+    prod1_fillQuantity
+    prod2_AddCartBtn
+    prod2_price
+    prod2_name
+    continueShopBtn
+    addCartStatus
+    viewCartBtn
+    quantity
+    prod1_cartName
+    prod1_cartPrice
+    prod1_cartQuantity
+    prod1_cartTotal
+    prod2_cartName
+    prod2_cartPrice
+    prod2_cartQuantity
+    prod2_cartTotal
+    brandsHeading
+    madameBrandBtn
+    madameBrandHeading
+    madameViewProdBtn_Prod1
+    madameBrand_Prod1
+    allProdsAddToCart
+    cartBtn
+    cartAllProdTitle
+    writeReviewHeading
+    reviewNameField
+    reviewEmailField
+    reviewTextareaField
+    reviewSubmitBtn
+    reviewSubmitStatus
+
+
+    constructor(page: Page) {
         this.page = page
         this.homeBtn = "//a[normalize-space()='Home']"
         this.productsBtn = "//a[@href='/products']"
@@ -68,7 +119,7 @@ class Product {
 
         this.writeReviewHeading = "//a[@href='#reviews']"
         this.reviewNameField = "input[id='name']"
-        this.reviewEmailField= "input[id='email']"
+        this.reviewEmailField = "input[id='email']"
         this.reviewTextareaField = "textarea[name='review']"
         this.reviewSubmitBtn = "button[id='button-review']"
         this.reviewSubmitStatus = "//div[@class='alert-success alert']/span[normalize-space()='Thank you for your review.']"
@@ -92,7 +143,7 @@ class Product {
     }
 
 
-    async searchProduct(product) {
+    async searchProduct(product: string) {
         await expect(this.page.locator(this.homeBtn)).toBeVisible();
         await this.page.locator(this.productsBtn).click();
 
@@ -105,7 +156,7 @@ class Product {
         const prodList = await this.page.$$(this.allProdTitle);
 
         for (let i = 0; i < prodList.length; i++) {
-            const name = await prodList[i].textContent();
+            const name: any = await prodList[i].textContent();
             console.log(name.toLowerCase());
 
             // await expect((name.toLowerCase()).includes(product)).toBeTruthy();
@@ -120,8 +171,8 @@ class Product {
 
         await this.page.locator(this.productsBtn).click();
 
-        const name_p1 = await this.page.locator(this.prod1_name).textContent();
-        const price_p1 = await this.page.locator(this.prod1_price).textContent();
+        const name_p1: any = await this.page.locator(this.prod1_name).textContent();
+        const price_p1: any = await this.page.locator(this.prod1_price).textContent();
         console.log(`${name_p1} - ${price_p1}`);
 
         await this.page.locator(this.prod1_viewProduct).click();
@@ -149,8 +200,8 @@ class Product {
         await expect(name_p1).toBe(nameCart_p1);
         await expect(name_p2).toBe(nameCart_p2);
 
-        const priceCart_p1 = await this.page.locator(this.prod1_cartPrice).textContent();
-        const priceCart_p2 = await this.page.locator(this.prod2_cartPrice).textContent();
+        const priceCart_p1: any = await this.page.locator(this.prod1_cartPrice).textContent();
+        const priceCart_p2: any = await this.page.locator(this.prod2_cartPrice).textContent();
 
 
         console.log(`${price_p1} = ${priceCart_p1.trim()}`);
@@ -162,7 +213,7 @@ class Product {
 
         const prod1_cartPrice = this.priceParse(priceCart_p1.trim());
 
-        const quantityCart_p1 = await this.page.locator(this.prod1_cartQuantity).textContent();
+        const quantityCart_p1: any = await this.page.locator(this.prod1_cartQuantity).textContent();
         const q_p1 = parseInt(quantityCart_p1);
         console.log(`P1 Quantity: ${q_p1}`);
 
@@ -177,7 +228,7 @@ class Product {
 
         const prod2_cartPrice = this.priceParse(priceCart_p2.trim());
 
-        const quantityCart_p2 = await this.page.locator(this.prod2_cartQuantity).textContent();
+        const quantityCart_p2: any = await this.page.locator(this.prod2_cartQuantity).textContent();
         const q_p2 = parseInt(quantityCart_p2);
         console.log(`P2 Quantity: ${q_p2}`);
 
@@ -192,14 +243,14 @@ class Product {
 
     }
 
-    priceParse(price) {
+    priceParse(price: any) {
         const arr = price.split(' ');
         const parsePrice = parseInt(arr[1]);
         return parsePrice;
     }
 
 
-    async verifyProductQuantity(quantity) {
+    async verifyProductQuantity(quantity: any) {
         await expect(this.page.locator(this.homeBtn)).toBeVisible();
 
         await this.page.locator(this.prod1_viewProduct).click();
@@ -252,7 +303,7 @@ class Product {
         await expect(this.page.locator(this.madameBrandHeading)).toBeVisible();
 
         await this.page.locator(this.madameViewProdBtn_Prod1).click();
-        const brandName_Prod1 = await this.page.locator(this.madameBrand_Prod1).textContent();
+        const brandName_Prod1: any = await this.page.locator(this.madameBrand_Prod1).textContent();
         console.log(brandName_Prod1);
         await expect(brandName_Prod1.includes("Madame")).toBeTruthy();
 
@@ -291,8 +342,8 @@ class Product {
         const cartAllProdTitle = await this.page.locator(this.cartAllProdTitle).allTextContents();
         console.log(cartAllProdTitle);
 
-        const allProdTitleSorted = allprodTitle.sort((a, b) => a - b);
-        const cartAllProdTitleSorted = cartAllProdTitle.sort((a, b) => a - b);
+        const allProdTitleSorted = allprodTitle.sort((a: any, b: any) => a - b);
+        const cartAllProdTitleSorted = cartAllProdTitle.sort((a: any, b: any) => a - b);
 
         console.log(allProdTitleSorted);
         console.log(cartAllProdTitleSorted);
@@ -304,18 +355,20 @@ class Product {
         }
 
 
-        const loginPage = new LoginPage(this.page);
+        // const loginPage = new LoginPage(this.page);
+        const poManager = new POManager(this.page);
+        const loginPage = poManager.getLoginPage();
         await loginPage.loginUser("Moin1@gmail.com", "Moin@123");
 
         await this.page.locator(this.cartBtn).click();
         await expect(this.page).toHaveURL(/view_cart/);
-        
+
         const cartAllProdTitle2 = await this.page.locator(this.cartAllProdTitle).allTextContents();
         console.log(cartAllProdTitle2);
 
     }
 
-    async addReviewOnProduct(name,email,review){
+    async addReviewOnProduct(name: string, email: string, review: string) {
         await this.page.locator(this.productsBtn).click();
         await expect(this.page).toHaveURL(/products/);
 
@@ -335,5 +388,3 @@ class Product {
 
 
 }
-
-module.exports = Product

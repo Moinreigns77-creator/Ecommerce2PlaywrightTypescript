@@ -1,7 +1,52 @@
-const { expect } = require("@playwright/test");
+import { expect, Locator, Page } from "@playwright/test";
 
-class Home {
-    constructor(page) {
+export class Home {
+
+    page: Page;
+    homeBtn: string;
+    loggedInAsHeading: string;
+    logoutBtn: string;
+    deleteBtn: string;
+    loginPageHeading: string;
+    deleteAccStatus: string;
+    continueBtn: string;
+    signUp_loginBtn: string;
+    contactUsBtn: string;
+    getInTouchHeading: string;
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+    fileBtn: string;
+    submitBtn: string;
+    formSubmitStatus: string;
+    testCasesBtn: string;
+    footer: string;
+    subscriptionHeading: string;
+    subscribeEmailField: string;
+    subscribeBtn: string;
+    subscribeStatus: string;
+    categoryHeading: string;
+    womenCategoryBtn: string;
+    womenDressBtn: string;
+    womenDressHeading: string;
+    menCategoryBtn: string;
+    menJeansBtn: string;
+    menJeansHeading: string;
+    recommendedItemsHeading: string;
+    recommendedAddCart_Prod1: string;
+    recommendedTitle_Prod1: string;
+    recommendedAddCart_Prod2: string;
+    recommendedTitle_Prod2: string;
+    cartBtn: string;
+    prod1_cartName: string;
+    prod2_cartName: string;
+    continueBtn2: string;
+    scrollUpBtn: string;
+    automationPracticeHeading: string; 
+
+
+    constructor(page: Page) {
         this.page = page
         this.homeBtn = "//a[normalize-space()='Home']"
         this.loggedInAsHeading = "//a[contains(text(),'Logged in as')]"
@@ -81,7 +126,7 @@ class Home {
         await expect(this.page.locator(this.signUp_loginBtn)).toBeVisible();
     }
 
-    async contactUs(name, email, subject, message, filePath) {
+    async contactUs(name:string, email: string, subject: string, message: string, filePath: string) {
         await expect(this.page.locator(this.homeBtn)).toBeVisible();
 
         await this.page.locator(this.contactUsBtn).click();
@@ -121,7 +166,7 @@ class Home {
 
     }
 
-    async verifySubscribtion(email) {
+    async verifySubscribtion(email: string) {
         await expect(this.page.locator(this.homeBtn)).toBeVisible();
         // await this.page.locator(this.footer).scrollIntoViewIfNeeded();
 
@@ -193,7 +238,7 @@ class Home {
         await expect(this.page.locator(this.automationPracticeHeading)).toBeVisible();
     }
 
-     async verifyScrollUpWithoutBtn() {
+    async verifyScrollUpWithoutBtn() {
         await expect(this.page.locator(this.homeBtn)).toBeVisible();
 
         await this.page.locator(this.footer).scrollIntoViewIfNeeded();
@@ -205,7 +250,3 @@ class Home {
 
 
 }
-
-
-
-module.exports = Home

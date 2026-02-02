@@ -1,14 +1,54 @@
-const { expect } = require("@playwright/test")
-
-const RegisterPage = require("../pages/registerPage.js")
+import { expect, Page, Locator } from "@playwright/test"
+import { POManager } from "./POManager.ts"
+// const RegisterPage = require("../pages/registerPage.js")
 const data = require("../JsonFiles/registerData.json")
 
-const ProductPage = require("../pages/productPage.js")
+// const ProductPage = require("../pages/productPage.js")
 
-const LoginPage = require("../pages/loginPage.js")
+// const LoginPage = require("../pages/loginPage.js")
 
-class Cart {
-    constructor(page) {
+export class Cart {
+
+    page: Page;
+    homeBtn: string;
+    cartBtn: string;
+    footer: string;
+    subscriptionHeading: string;
+    subscribeEmailField: string;
+    subscribeBtn: string;
+    subscribeStatus: string;
+    checkoutBtn: string;
+    register_LoginBtn: string;
+    addressDetailsHeading: string;
+    addressName: string;
+    company: string;
+    address1: string;
+    address2: string;
+    cityStatePostalCode: string;
+    country: string;
+    phone: string;
+    billingAddressName: string;
+    billingCompany: string;
+    billingAddress1: string;
+    billingAddress2: string;
+    billingCityStatePostalCode: string;
+    billingCountry: string;
+    billingPhone: string;
+    commentTextarea: string;
+    placeOrderBtn: string;
+    name_on_card: string;
+    card_number: string;
+    cvv: string;
+    expiry_month: string;
+    expiry_year: string;
+    pay_and_confirmOrderBtn: string;
+    orderPlacedMessage: string;
+    prod1_name: string;
+    prod1_removeCart: string;
+    downloadInvoiceBtn: string;
+
+
+    constructor(page: Page) {
         this.page = page
         this.homeBtn = "//a[@href='/']/i"
         this.cartBtn = "//a[@href='/view_cart'][normalize-space()='Cart']"
@@ -39,9 +79,6 @@ class Cart {
         this.billingCountry = "//ul[@id='address_invoice']/li[@class='address_country_name']"
         this.billingPhone = "//ul[@id='address_invoice']/li[@class='address_phone']"
 
-
-
-
         this.commentTextarea = "//textarea[@name='message']"
         this.placeOrderBtn = "//a[@href='/payment']"
 
@@ -59,10 +96,9 @@ class Cart {
         this.downloadInvoiceBtn = "//a[contains(@href,'/download_invoice/')]"
 
 
-
     }
 
-    async verifySubscribtion(email) {
+    async verifySubscribtion(email: string) {
         await expect(this.page.locator(this.homeBtn)).toBeVisible();
         await this.page.locator(this.cartBtn).click();
         await this.page.locator(this.footer).scrollIntoViewIfNeeded();
@@ -82,7 +118,9 @@ class Cart {
         await this.page.locator(this.checkoutBtn).click();
         await this.page.locator(this.register_LoginBtn).click();
 
-        const registerPage = new RegisterPage(this.page);
+        // const registerPage = new RegisterPage(this.page);
+        const poManager = new POManager(this.page);
+        const registerPage = poManager.getRegisterPage();
         await registerPage.registerUser(data.name, data.email, data.title, data.password, data.day, data.month, data.year, data.firstName, data.lastName, data.company, data.address1, data.address2, data.country, data.state, data.city, data.zipcode, data.mobile);
 
         await this.page.locator(this.cartBtn).click();
@@ -103,7 +141,8 @@ class Cart {
         await expect(address2).toBe(data.address2);
 
         const cityStatePostalCode = data.city + ' ' + data.state + ' ' + data.zipcode;
-        const city_state_zipcode = await this.page.locator(this.cityStatePostalCode).textContent();
+        let city_state_zipcode: any;
+        city_state_zipcode = await this.page.locator(this.cityStatePostalCode).textContent();
         await expect(cityStatePostalCode).toBe(city_state_zipcode.replace(/\s+/g, ' ').trim())
         console.log(cityStatePostalCode);
         console.log(city_state_zipcode.replace(/\s+/g, ' ').trim());
@@ -131,11 +170,13 @@ class Cart {
 
     async registerAndCheckoutProducts() {
 
-        const registerPage = new RegisterPage(this.page);
+
+        const poManager = new POManager(this.page);
+        const registerPage = poManager.getRegisterPage();
         await registerPage.registerUser(data.name, data.email, data.title, data.password, data.day, data.month, data.year, data.firstName, data.lastName, data.company, data.address1, data.address2, data.country, data.state, data.city, data.zipcode, data.mobile);
 
 
-        const productPage = new ProductPage(this.page);
+        const productPage = poManager.getProductPage();
         await productPage.addProducts();
 
         await this.page.locator(this.cartBtn).click();
@@ -157,7 +198,7 @@ class Cart {
         await expect(address2).toBe(data.address2);
 
         const cityStatePostalCode = data.city + ' ' + data.state + ' ' + data.zipcode;
-        const city_state_zipcode = await this.page.locator(this.cityStatePostalCode).textContent();
+        const city_state_zipcode: any = await this.page.locator(this.cityStatePostalCode).textContent();
         await expect(cityStatePostalCode).toBe(city_state_zipcode.replace(/\s+/g, ' ').trim())
         console.log(cityStatePostalCode);
         console.log(city_state_zipcode.replace(/\s+/g, ' ').trim());
@@ -203,7 +244,7 @@ class Cart {
         await expect(address2).toBe(data.address2);
 
         const cityStatePostalCode = data.city + ' ' + data.state + ' ' + data.zipcode;
-        const city_state_zipcode = await this.page.locator(this.cityStatePostalCode).textContent();
+        const city_state_zipcode: any = await this.page.locator(this.cityStatePostalCode).textContent();
         await expect(cityStatePostalCode).toBe(city_state_zipcode.replace(/\s+/g, ' ').trim())
         console.log(cityStatePostalCode);
         console.log(city_state_zipcode.replace(/\s+/g, ' ').trim());
@@ -230,10 +271,11 @@ class Cart {
 
     async loginBeforeCheckout() {
 
-        const productPage = new ProductPage(this.page);
+        const poManager = new POManager(this.page);
+        const productPage = poManager.getProductPage();
         await productPage.addProducts();
 
-        const loginPage = new LoginPage(this.page);
+        const loginPage = poManager.getLoginPage();
         await loginPage.loginUser(data.email, data.password);
 
         await this.checkoutProducts();
@@ -242,7 +284,8 @@ class Cart {
 
     async removeProductFromCart() {
 
-        const productPage = new ProductPage(this.page);
+        const poManager = new POManager(this.page);
+        const productPage = poManager.getProductPage();
         await productPage.addProducts();
 
         await this.page.locator(this.cartBtn).click();
@@ -280,8 +323,8 @@ class Cart {
         await expect(billingAddress2).toBe(data.address2);
 
         const cityStatePostalCode = data.city + ' ' + data.state + ' ' + data.zipcode;
-        const city_state_zipcode = await this.page.locator(this.cityStatePostalCode).textContent();
-        const billingCity_state_zipcode = await this.page.locator(this.billingCityStatePostalCode).textContent();
+        const city_state_zipcode: any = await this.page.locator(this.cityStatePostalCode).textContent();
+        const billingCity_state_zipcode: any = await this.page.locator(this.billingCityStatePostalCode).textContent();
 
         await expect(cityStatePostalCode).toBe(city_state_zipcode.replace(/\s+/g, ' ').trim())
         await expect(cityStatePostalCode).toBe(billingCity_state_zipcode.replace(/\s+/g, ' ').trim())
@@ -348,5 +391,3 @@ class Cart {
     }
 
 }
-
-module.exports = Cart

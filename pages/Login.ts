@@ -1,8 +1,17 @@
-const { expect } = require("@playwright/test");
+import { expect, Page } from "@playwright/test";
 
-class Login {
-
-    constructor(page) {
+export class Login {
+    page: Page;
+    homeHeading: string;
+    signup_loginBtn: string;
+    email: string;
+    password: string;
+    loginBtn: string;
+    loggedInAsHeading: string;
+    logoutBtn: string;
+    loginFailStatus: string;
+    
+    constructor(page: Page) {
         this.page = page
         this.homeHeading = "//h2[normalize-space()='Features Items']"
         this.signup_loginBtn = "//a[normalize-space()='Signup / Login']"
@@ -15,7 +24,7 @@ class Login {
         this.loginFailStatus = "//p[normalize-space()='Your email or password is incorrect!']"
     }
 
-    async loginUser(email, password) {
+    async loginUser(email: string, password: string) {
         //  await expect(this.page.locator(this.homeHeading)).toBeVisible();
         await this.page.locator(this.signup_loginBtn).click();
 
@@ -31,8 +40,8 @@ class Login {
         await expect(this.page.locator(this.loggedInAsHeading)).toBeVisible();
     }
 
-    async loginUserInvalidCredentials(email, password) {
-        await expect(this.page.locator(this.homeBtn)).toBeVisible();
+    async loginUserInvalidCredentials(email: string, password: string) {
+        await expect(this.page.locator(this.homeHeading)).toBeVisible();
         await this.page.locator(this.signup_loginBtn).click();
 
         await expect(this.page.locator("h2:has-text('Login to your account')")).toBeVisible();
@@ -44,4 +53,3 @@ class Login {
     }
 }
 
-module.exports = Login
