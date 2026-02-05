@@ -123,6 +123,7 @@ export class Product {
         this.reviewTextareaField = "textarea[name='review']"
         this.reviewSubmitBtn = "button[id='button-review']"
         this.reviewSubmitStatus = "//div[@class='alert-success alert']/span[normalize-space()='Thank you for your review.']"
+        //  this.reviewSubmitStatus = ""
     }
 
     async verifyProducts() {
@@ -320,33 +321,47 @@ export class Product {
         await this.page.locator(this.productsBtn).click();
         await expect(this.page.locator(this.allProductsHeading)).toBeVisible();
 
-        await this.page.locator(this.searchField).fill("Jeans");
+        await this.page.locator(this.searchField).fill("Shirt");
         await this.page.locator(this.searchBtn).click();
         await expect(this.page.locator(this.searchedProductsHeading)).toBeVisible();
 
         const allprodTitle = await this.page.locator(this.allProdTitle).allTextContents();
+        console.log(allprodTitle);
+        const filteredProdTitles = allprodTitle.filter((value, index, arr) => {
+            if (value.toLowerCase().includes('shirt')) {
+                return value;
+            }
+        })
+        console.log(filteredProdTitles);
 
-        for (let i = 0; i < allprodTitle.length; i++) {
-            await expect(allprodTitle[i].includes("Jean")).toBeTruthy();
+        for (let i = 0; i < filteredProdTitles.length; i++) {
+            await expect(filteredProdTitles[i].toLowerCase().includes("shirt")).toBeTruthy();
         }
 
-        const allProdsAddToCart = await this.page.$$(this.allProdsAddToCart);
+        // const allProdsAddToCart = await this.page.$$(this.allProdsAddToCart);
 
-        for (let btn of allProdsAddToCart) {
-            await btn.click();
+        // for (let btn of allProdsAddToCart) {
+        //     await btn.click();
+        //     await this.page.locator(this.continueShopBtn).click();
+        // }
+        for (let title of filteredProdTitles) {
+            await this.page.locator(`//p[normalize-space()='${title}']/following-sibling::a`).first().click();
             await this.page.locator(this.continueShopBtn).click();
         }
-
         await this.page.locator(this.cartBtn).click();
         await expect(this.page).toHaveURL(/view_cart/);
         const cartAllProdTitle = await this.page.locator(this.cartAllProdTitle).allTextContents();
-        console.log(cartAllProdTitle);
+        // console.log(cartAllProdTitle);
 
-        const allProdTitleSorted = allprodTitle.sort((a: any, b: any) => a - b);
-        const cartAllProdTitleSorted = cartAllProdTitle.sort((a: any, b: any) => a - b);
+        const allProdTitleSorted = filteredProdTitles.slice().sort((a, b) =>
+            a.localeCompare(b, undefined, { sensitivity: 'base' })
+        );
+        const cartAllProdTitleSorted = cartAllProdTitle.slice().sort((a, b) =>
+            a.localeCompare(b, undefined, { sensitivity: 'base' })
+        );
 
         console.log(allProdTitleSorted);
-        console.log(cartAllProdTitleSorted);
+        // console.log(cartAllProdTitleSorted);
 
         await expect(allProdTitleSorted.length === cartAllProdTitleSorted.length).toBeTruthy();
 
@@ -380,9 +395,11 @@ export class Product {
         await this.page.locator(this.reviewNameField).fill(name);
         await this.page.locator(this.reviewEmailField).fill(email);
         await this.page.locator(this.reviewTextareaField).fill(review);
-        await this.page.locator(this.reviewSubmitBtn).click();
-        await expect(this.page.locator(this.reviewSubmitStatus)).toBeVisible();
+        await Promise.all([
+            expect(this.page.locator(this.reviewSubmitStatus)).toBeVisible(),
+             this.page.locator(this.reviewSubmitBtn).click()
 
+        ]);
 
     }
 

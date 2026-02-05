@@ -43,7 +43,7 @@ export class Home {
     prod2_cartName: string;
     continueBtn2: string;
     scrollUpBtn: string;
-    automationPracticeHeading: string; 
+    automationPracticeHeading: string;
 
 
     constructor(page: Page) {
@@ -126,10 +126,13 @@ export class Home {
         await expect(this.page.locator(this.signUp_loginBtn)).toBeVisible();
     }
 
-    async contactUs(name:string, email: string, subject: string, message: string, filePath: string) {
+    async contactUs(name: string, email: string, subject: string, message: string, filePath: string) {
         await expect(this.page.locator(this.homeBtn)).toBeVisible();
-
-        await this.page.locator(this.contactUsBtn).click();
+        await Promise.all([
+            this.page.waitForResponse(res =>
+                res.url().includes('/contact_us') && res.status() === 200
+            ),
+            this.page.locator(this.contactUsBtn).click()]);
 
         await expect(this.page.locator(this.getInTouchHeading)).toBeVisible();
 
@@ -147,13 +150,10 @@ export class Home {
 
             dialogwin.accept();
         })
+        await this.page.locator(this.submitBtn).click(),
 
-        await Promise.all([
-            this.page.waitForResponse(res => res.url().includes('/contact_us') && res.status() === 200),
-            this.page.locator(this.submitBtn).click(),
-        ]);
-        await this.page.waitForTimeout(10000);
-        await expect(this.page.locator(this.formSubmitStatus)).toBeVisible();
+
+            await expect(this.page.locator(this.formSubmitStatus)).toBeVisible();
 
     }
 
