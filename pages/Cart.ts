@@ -2,7 +2,7 @@ import { expect, Page, Locator } from "@playwright/test"
 import { POManager } from "./POManager.ts"
 // const RegisterPage = require("../pages/registerPage.js")
 const data = require("../JsonFiles/registerData.json")
-
+import loginData from "../JsonFiles/loginData.json"
 // const ProductPage = require("../pages/productPage.js")
 
 // const LoginPage = require("../pages/loginPage.js")
@@ -118,7 +118,6 @@ export class Cart {
         await this.page.locator(this.checkoutBtn).click();
         await this.page.locator(this.register_LoginBtn).click();
 
-        // const registerPage = new RegisterPage(this.page);
         const poManager = new POManager(this.page);
         const registerPage = poManager.getRegisterPage();
         await registerPage.registerUser(data.name, data.email, data.title, data.password, data.day, data.month, data.year, data.firstName, data.lastName, data.company, data.address1, data.address2, data.country, data.state, data.city, data.zipcode, data.mobile);
@@ -276,7 +275,7 @@ export class Cart {
         await productPage.addProducts();
 
         const loginPage = poManager.getLoginPage();
-        await loginPage.loginUser(data.email, data.password);
+        await loginPage.loginUser(loginData.email, loginData.password);
 
         await this.checkoutProducts();
     }

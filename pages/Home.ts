@@ -122,7 +122,8 @@ export class Home {
         await expect(this.page.locator(this.deleteAccStatus)).toBeVisible();
 
         await this.page.locator(this.continueBtn).click();
-
+        console.log("Account deleted successfully!");
+        
         await expect(this.page.locator(this.signUp_loginBtn)).toBeVisible();
     }
 

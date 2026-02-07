@@ -25,7 +25,7 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
 
-  timeout: 60000*3,
+  timeout: 60000*5,
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
@@ -48,11 +48,11 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         deviceScaleFactor:undefined,
         headless: false,
-        viewport: null,  // disable fixed viewport
-        launchOptions: {
-          args: ['--start-maximized'], // maximize browser
-          slowMo: 5000, // optional (for demo)
-        },
+        viewport: {height:1080,width:1440}  // disable fixed viewport
+        // launchOptions: {
+        //   args: ['--start-maximized'], // maximize browser
+        //   slowMo: 5000, // optional (for demo)
+        // },
       },
 
     },

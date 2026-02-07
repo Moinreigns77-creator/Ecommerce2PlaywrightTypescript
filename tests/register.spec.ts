@@ -18,7 +18,7 @@ test("Register with existing email id", async ({ page }) => {
     await page.goto("https://automationexercise.com/");
     const poManager = new POManager(page);
     const registerPage = poManager.getRegisterPage();
-    await registerPage.registerUserWithExistingEmail(data.name, data.email);
+    await registerPage.registerUserWithExistingEmail(data.name, "Moin2@gmail.com");
 
 
 })

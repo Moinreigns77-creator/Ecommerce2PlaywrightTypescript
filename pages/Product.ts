@@ -290,7 +290,7 @@ export class Product {
         await expect(this.page.locator(this.addCartStatus)).toBeVisible();
         // await this.page.locator(this.viewCartBtn).click();
         await this.page.locator(this.continueShopBtn).click();
-
+        await this.page.locator(this.cartBtn).click();
     }
 
     async verifyBrand() {
